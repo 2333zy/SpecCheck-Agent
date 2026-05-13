@@ -110,22 +110,30 @@ export async function generateAcceptancePlan(input: {
 }): Promise<AcceptancePlan> {
   if (!process.env.OPENAI_API_KEY) return generateMockAcceptancePlan(input);
 
-  const provider = createOpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    baseURL: process.env.OPENAI_BASE_URL,
-  });
+  try {
+    const provider = createOpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      baseURL: process.env.OPENAI_BASE_URL,
+    });
 
-  const result = await generateObject({
-    model: provider(process.env.OPENAI_MODEL || "deepseek4pro"),
-    schema: AcceptancePlanSchema,
-    prompt: [
-      "Convert the frontend requirement into deterministic Playwright acceptance checks.",
-      "Only use supported actions and selectors. Prefer label, role, text, placeholder, or testId.",
-      `Target URL: ${input.targetUrl}`,
-      `Project context: ${input.projectContext || "None"}`,
-      `Requirement: ${input.requirement}`,
-    ].join("\n\n"),
-  });
+    const result = await generateObject({
+      model: provider(process.env.OPENAI_MODEL || "deepseek4pro"),
+      schema: AcceptancePlanSchema,
+      prompt: [
+        "Convert the frontend requirement into deterministic Playwright acceptance checks.",
+        "Only use supported actions and selectors. Prefer label, role, text, placeholder, or testId.",
+        `Target URL: ${input.targetUrl}`,
+        `Project context: ${input.projectContext || "None"}`,
+        `Requirement: ${input.requirement}`,
+      ].join("\n\n"),
+    });
 
-  return AcceptancePlanSchema.parse(result.object);
+    return AcceptancePlanSchema.parse(result.object);
+  } catch (error) {
+    console.warn(
+      "AI plan generation failed; falling back to deterministic mock planner.",
+      error instanceof Error ? error.message : error,
+    );
+    return generateMockAcceptancePlan(input);
+  }
 }

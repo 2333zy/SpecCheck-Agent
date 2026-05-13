@@ -12,18 +12,23 @@ const JobFormSchema = z.object({
 });
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const user = await requireUser();
-  const { id } = await params;
-  const form = await request.formData();
-  const parsed = JobFormSchema.safeParse(Object.fromEntries(form.entries()));
-  if (!parsed.success) return jsonError(parsed.error.issues[0]?.message ?? "Invalid input");
-  const jobId = await createPlannedJob({
-    userId: user.id,
-    projectId: id,
-    targetUrl: parsed.data.targetUrl,
-    startCommand: parsed.data.startCommand,
-    requirement: parsed.data.requirement,
-    options: { trace: parsed.data.trace === "on" },
-  });
-  redirect(`/jobs/${jobId}/plan`);
+  try {
+    const user = await requireUser();
+    const { id } = await params;
+    const form = await request.formData();
+    const parsed = JobFormSchema.safeParse(Object.fromEntries(form.entries()));
+    if (!parsed.success) return jsonError(parsed.error.issues[0]?.message ?? "Invalid input");
+    const jobId = await createPlannedJob({
+      userId: user.id,
+      projectId: id,
+      targetUrl: parsed.data.targetUrl,
+      startCommand: parsed.data.startCommand,
+      requirement: parsed.data.requirement,
+      options: { trace: parsed.data.trace === "on" },
+    });
+    redirect(`/jobs/${jobId}/plan`);
+  } catch (error) {
+    if (error instanceof Response) throw error;
+    return jsonError(error instanceof Error ? error.message : "Failed to create acceptance job.", 500);
+  }
 }
