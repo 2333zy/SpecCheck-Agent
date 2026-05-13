@@ -9,7 +9,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const form = await request.formData();
     const planJson = String(form.get("planJson") ?? "");
     if (!planJson) return jsonError("Plan JSON is required.");
-    await approveAndRunJob({ userId: user.id, jobId: id, planJson });
+    await approveAndRunJob({ userId: user.id, jobId: id, planJson }).catch((error) => {
+      console.error("Acceptance job failed.", error);
+    });
     return Response.redirect(new URL(`/jobs/${id}`, request.url), 303);
   } catch (error) {
     if (error instanceof Response) throw error;

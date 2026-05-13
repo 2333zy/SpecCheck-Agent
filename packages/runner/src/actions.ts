@@ -22,7 +22,12 @@ function locatorFor(page: Page, strategy: AcceptanceCheck["selectorStrategy"], t
 
 export async function runStep(page: Page, check: AcceptanceCheck, step: Step) {
   const timeout = step.timeoutMs ?? 5_000;
-  const locator = step.target ? locatorFor(page, check.selectorStrategy, step.target) : null;
+  const strategy =
+    (step.action === "fill" || step.action === "check" || step.action === "uncheck" || step.action === "select") &&
+    check.selectorStrategy === "role"
+      ? "label"
+      : check.selectorStrategy;
+  const locator = step.target ? locatorFor(page, strategy, step.target) : null;
 
   switch (step.action) {
     case "goto":

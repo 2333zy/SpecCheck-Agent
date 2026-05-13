@@ -23,6 +23,8 @@ export async function runAcceptancePlan(options: {
   await ensureEvidenceDirs(options.reportDir);
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
+  context.setDefaultTimeout(5_000);
+  context.setDefaultNavigationTimeout(10_000);
   const page = await context.newPage();
   const consoleErrors: string[] = [];
   const networkErrors: string[] = [];
