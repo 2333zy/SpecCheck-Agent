@@ -11,3 +11,5 @@ reports/*.html
 playwright-report
 test-results
 *.tsbuildinfo
+packages/*/src/**/*.js
+packages/*/src/**/*.d.ts
