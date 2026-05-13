@@ -116,7 +116,7 @@ export async function generateAcceptancePlan(input: {
   });
 
   const result = await generateObject({
-    model: provider(process.env.OPENAI_MODEL || "gpt-4o-mini"),
+    model: provider(process.env.OPENAI_MODEL || "deepseek4pro"),
     schema: AcceptancePlanSchema,
     prompt: [
       "Convert the frontend requirement into deterministic Playwright acceptance checks.",
