@@ -10,7 +10,7 @@
     "db:push": "prisma db push --schema prisma/schema.prisma",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0"
