@@ -1,0 +1,23 @@
+{
+  "name": "@speccheck/agent",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^2.0.72",
+    "@speccheck/core": "workspace:*",
+    "ai": "^5.0.95",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@speccheck/db",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "db:generate": "prisma generate --schema prisma/schema.prisma",
+    "db:push": "prisma db push --schema prisma/schema.prisma",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.19.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}

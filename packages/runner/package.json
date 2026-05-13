@@ -1,0 +1,24 @@
+{
+  "name": "@speccheck/runner",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@speccheck/core": "workspace:*",
+    "execa": "^9.6.0",
+    "playwright": "^1.57.0",
+    "tree-kill": "^1.2.2",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}

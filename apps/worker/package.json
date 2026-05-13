@@ -1,0 +1,25 @@
+{
+  "name": "@speccheck/worker",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@speccheck/core": "workspace:*",
+    "@speccheck/db": "workspace:*",
+    "@speccheck/runner": "workspace:*",
+    "bullmq": "^5.64.1",
+    "ioredis": "^5.8.2"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}

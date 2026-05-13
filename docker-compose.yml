@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: speccheck-postgres
+    environment:
+      POSTGRES_USER: speccheck
+      POSTGRES_PASSWORD: speccheck
+      POSTGRES_DB: speccheck
+    ports:
+      - "5432:5432"
+    volumes:
+      - speccheck-postgres:/var/lib/postgresql/data
+  redis:
+    image: redis:7-alpine
+    container_name: speccheck-redis
+    ports:
+      - "6379:6379"
+volumes:
+  speccheck-postgres:

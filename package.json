@@ -1,0 +1,24 @@
+{
+  "name": "speccheck-agent",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.30.3",
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json,css,prisma}\"",
+    "db:generate": "pnpm --filter @speccheck/db db:generate",
+    "db:push": "pnpm --filter @speccheck/db db:push"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "eslint": "^9.39.1",
+    "prettier": "^3.6.2",
+    "turbo": "^2.6.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}

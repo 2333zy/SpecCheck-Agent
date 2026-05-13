@@ -1,0 +1,42 @@
+{
+  "name": "@speccheck/web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^2.0.72",
+    "@auth/prisma-adapter": "^2.11.1",
+    "@speccheck/agent": "workspace:*",
+    "@speccheck/core": "workspace:*",
+    "@speccheck/db": "workspace:*",
+    "@speccheck/runner": "workspace:*",
+    "ai": "^5.0.95",
+    "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.555.0",
+    "next": "^16.0.3",
+    "next-auth": "^4.24.13",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-markdown": "^10.1.0",
+    "tailwind-merge": "^3.4.0",
+    "zod": "^4.1.13",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.17",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/react": "^19.2.6",
+    "@types/react-dom": "^19.2.3",
+    "tailwindcss": "^4.1.17",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}

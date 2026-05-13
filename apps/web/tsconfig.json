@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "allowJs": true,
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "paths": {
+      "@/*": ["./*"],
+      "@speccheck/core": ["../../packages/core/src/index.ts"],
+      "@speccheck/db": ["../../packages/db/src/index.ts"],
+      "@speccheck/runner": ["../../packages/runner/src/index.ts"],
+      "@speccheck/agent": ["../../packages/agent/src/index.ts"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
