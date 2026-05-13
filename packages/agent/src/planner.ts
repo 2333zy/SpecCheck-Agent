@@ -121,8 +121,11 @@ function parseJsonFromText(text: string) {
 
 async function generatePlanWithChatCompletions(input: PlanInput): Promise<AcceptancePlan> {
   const baseUrl = normalizeBaseUrl(process.env.OPENAI_BASE_URL);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20_000);
   const response = await fetch(`${baseUrl}/chat/completions`, {
     method: "POST",
+    signal: controller.signal,
     headers: {
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       "Content-Type": "application/json",
@@ -154,7 +157,7 @@ async function generatePlanWithChatCompletions(input: PlanInput): Promise<Accept
         },
       ],
     }),
-  });
+  }).finally(() => clearTimeout(timeout));
 
   if (!response.ok) {
     const errorText = await response.text().catch(() => "");

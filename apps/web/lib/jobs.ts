@@ -32,11 +32,26 @@ export async function createPlannedJob(input: {
     },
   });
 
-  const plan = await generateAcceptancePlan({
-    targetUrl: input.targetUrl,
-    requirement: input.requirement,
-    projectContext: [project.name, project.description, project.techStack].filter(Boolean).join("\n"),
-  });
+  let plan;
+  try {
+    plan = await generateAcceptancePlan({
+      targetUrl: input.targetUrl,
+      requirement: input.requirement,
+      projectContext: [project.name, project.description, project.techStack].filter(Boolean).join("\n"),
+    });
+  } catch (error) {
+    await prisma.agentLog.create({
+      data: {
+        jobId: job.id,
+        nodeName: "acceptance_planner",
+        level: "error",
+        eventType: "plan_generation_failed",
+        message: error instanceof Error ? error.message : "Plan generation failed.",
+      },
+    });
+    await prisma.checkJob.update({ where: { id: job.id }, data: { status: "failed", finishedAt: new Date() } });
+    throw error;
+  }
 
   await prisma.acceptancePlan.create({
     data: {
