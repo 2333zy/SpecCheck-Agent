@@ -1,0 +1,62 @@
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #f4f4f5;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.shell {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+}
+
+.panel {
+  display: grid;
+  width: min(420px, calc(100vw - 32px));
+  gap: 16px;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  background: #111113;
+  padding: 28px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #67e8f9;
+  font-size: 13px;
+}
+
+h1 {
+  margin: 0;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  color: #d4d4d8;
+  font-size: 14px;
+}
+
+input,
+button {
+  min-height: 42px;
+  border-radius: 6px;
+  border: 1px solid #3f3f46;
+  font: inherit;
+}
+
+input {
+  background: #18181b;
+  color: #fafafa;
+  padding: 0 12px;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  background: #22d3ee;
+  color: #083344;
+  font-weight: 700;
+}
