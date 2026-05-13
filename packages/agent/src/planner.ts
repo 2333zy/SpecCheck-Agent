@@ -2,6 +2,12 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { generateObject } from "ai";
 import { AcceptancePlanSchema, type AcceptancePlan } from "@speccheck/core";
 
+type PlanInput = {
+  requirement: string;
+  targetUrl: string;
+  projectContext?: string;
+};
+
 function check(id: string, title: string, target: string, type: "element_exists" | "text_exists" | "interaction", steps: AcceptancePlan["checks"][number]["steps"]) {
   return {
     id,
@@ -103,14 +109,77 @@ export function generateMockAcceptancePlan(input: { requirement: string; targetU
   });
 }
 
-export async function generateAcceptancePlan(input: {
-  requirement: string;
-  targetUrl: string;
-  projectContext?: string;
-}): Promise<AcceptancePlan> {
+function normalizeBaseUrl(baseUrl = "https://api.openai.com/v1") {
+  return baseUrl.replace(/\/+$/, "");
+}
+
+function parseJsonFromText(text: string) {
+  const trimmed = text.trim();
+  const fenced = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+  return JSON.parse(fenced?.[1] ?? trimmed);
+}
+
+async function generatePlanWithChatCompletions(input: PlanInput): Promise<AcceptancePlan> {
+  const baseUrl = normalizeBaseUrl(process.env.OPENAI_BASE_URL);
+  const response = await fetch(`${baseUrl}/chat/completions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: process.env.OPENAI_MODEL || "deepseek-v4-pro",
+      response_format: { type: "json_object" },
+      messages: [
+        {
+          role: "system",
+          content: [
+            "You generate JSON acceptance plans for deterministic Playwright checks.",
+            "Return only valid JSON matching this shape:",
+            "{ taskName: string, targetUrl: string, assumptions: string[], risks: string[], checks: Check[] }",
+            "Each check must include id, title, description, type, priority, selectorStrategy, steps, expected, failureMessage.",
+            "Supported check types: element_exists, text_exists, form_validation, interaction, loading_state, empty_state, navigation, console_error, network_error, visual_snapshot.",
+            "Supported actions: goto, fill, click, check, uncheck, select, waitForText, waitForSelector, expectVisible, expectText, expectUrl, screenshot.",
+            "Supported selectorStrategy values: role, label, placeholder, text, testId, css, xpath.",
+            "Prefer label/role/text selectors. Keep steps deterministic. Do not invent unsupported actions.",
+          ].join("\n"),
+        },
+        {
+          role: "user",
+          content: [
+            `Target URL: ${input.targetUrl}`,
+            `Project context: ${input.projectContext || "None"}`,
+            `Requirement: ${input.requirement}`,
+          ].join("\n\n"),
+        },
+      ],
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "");
+    throw new Error(`Chat completions request failed (${response.status}): ${errorText || response.statusText}`);
+  }
+
+  const payload = (await response.json()) as {
+    choices?: Array<{ message?: { content?: string } }>;
+  };
+  const content = payload.choices?.[0]?.message?.content;
+  if (!content) {
+    throw new Error("Chat completions response did not include message content.");
+  }
+
+  return AcceptancePlanSchema.parse(parseJsonFromText(content));
+}
+
+export async function generateAcceptancePlan(input: PlanInput): Promise<AcceptancePlan> {
   if (!process.env.OPENAI_API_KEY) return generateMockAcceptancePlan(input);
 
   try {
+    if (process.env.OPENAI_BASE_URL?.includes("deepseek.com")) {
+      return await generatePlanWithChatCompletions(input);
+    }
+
     const provider = createOpenAI({
       apiKey: process.env.OPENAI_API_KEY,
       baseURL: process.env.OPENAI_BASE_URL,
