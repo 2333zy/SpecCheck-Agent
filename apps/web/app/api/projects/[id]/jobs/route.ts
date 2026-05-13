@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import { jsonError } from "@/lib/api";
 import { requireUser } from "@/lib/auth";
@@ -26,7 +25,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       requirement: parsed.data.requirement,
       options: { trace: parsed.data.trace === "on" },
     });
-    redirect(`/jobs/${jobId}/plan`);
+    return Response.redirect(new URL(`/jobs/${jobId}/plan`, request.url), 303);
   } catch (error) {
     if (error instanceof Response) throw error;
     return jsonError(error instanceof Error ? error.message : "Failed to create acceptance job.", 500);
